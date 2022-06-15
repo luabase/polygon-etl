@@ -28,10 +28,11 @@ from polygonetl.service.eth_token_service import EthTokenService
 
 
 class ExportTokensJob(BaseJob):
-    def __init__(self, web3, item_exporter, token_addresses_iterable, max_workers):
+    def __init__(self, web3, item_exporter, token_addresses_iterable, max_workers, job_id=-1):
         self.item_exporter = item_exporter
         self.token_addresses_iterable = token_addresses_iterable
-        self.batch_work_executor = BatchWorkExecutor(1, max_workers)
+        self.job_id = job_id
+        self.batch_work_executor = BatchWorkExecutor(1, max_workers, job_id=self.job_id)
 
         self.token_service = EthTokenService(web3, clean_user_provided_content)
         self.token_mapper = EthTokenMapper()
