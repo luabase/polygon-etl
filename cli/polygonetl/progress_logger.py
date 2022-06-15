@@ -28,7 +28,7 @@ from polygonetl.atomic_counter import AtomicCounter
 
 # Thread safe progress logger.
 class ProgressLogger:
-    def __init__(self, name='work', logger=None, log_percentage_step=10, log_item_step=5000):
+    def __init__(self, name='work', logger=None, log_percentage_step=10, log_item_step=5000, job_id=None):
         self.name = name
         self.total_items = None
 
@@ -41,11 +41,15 @@ class ProgressLogger:
             self.logger = logger
         else:
             self.logger = logging.getLogger('ProgressLogger')
+        if job_id is not None:
+            self.job_id = job_id 
+        else:
+            self.job_id = 'no job specified'
 
     def start(self, total_items=None):
         self.total_items = total_items
         self.start_time = datetime.now()
-        start_message = 'Started {}.'.format(self.name)
+        start_message = 'Started {} for job id {}.'.format(self.name, self.job_id)
         if self.total_items is not None:
             start_message = start_message + ' Items to process: {}.'.format(self.total_items)
         self.logger.info(start_message)
@@ -58,12 +62,12 @@ class ProgressLogger:
         track_message = None
         if self.total_items is None:
             if int(processed_items_before / self.log_items_step) != int(processed_items / self.log_items_step):
-                track_message = '{} items processed.'.format(processed_items)
+                track_message = '{} items processed for job id {}.'.format(processed_items, self.job_id)
         else:
             percentage = processed_items * 100 / self.total_items
             percentage_before = processed_items_before * 100 / self.total_items
             if int(percentage_before / self.log_percentage_step) != int(percentage / self.log_percentage_step):
-                track_message = '{} items processed. Progress is {}%'.format(processed_items, int(percentage)) + \
+                track_message = '{} items processed. Progress is {}%, for job id {}'.format(processed_items, int(percentage), self.job_id) + \
                                 ('!!!' if int(percentage) > 100 else '.')
 
         if track_message is not None:
@@ -75,7 +79,7 @@ class ProgressLogger:
             self.end_time = datetime.now()
             duration = self.end_time - self.start_time
 
-        finish_message = 'Finished {}. Total items processed: {}.'.format(self.name, self.counter.increment() - 1)
+        finish_message = 'Finished {}. Total items processed: {} for job id {}'.format(self.name, self.counter.increment() - 1, self.job_id)
         if duration is not None:
             finish_message = finish_message + ' Took {}.'.format(str(duration))
 
