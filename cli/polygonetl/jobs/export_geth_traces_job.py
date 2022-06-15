@@ -39,16 +39,15 @@ class ExportGethTracesJob(BaseJob):
             batch_size,
             batch_web3_provider,
             max_workers,
-            item_exporter,
-            job_id=-1):
+            item_exporter):
         validate_range(start_block, end_block)
         self.start_block = start_block
         self.end_block = end_block
 
         self.batch_web3_provider = batch_web3_provider
-        self.job_id = job_id
+        # self.job_id = job_id
 
-        self.batch_work_executor = BatchWorkExecutor(batch_size, max_workers, job_id=self.job_id)
+        self.batch_work_executor = BatchWorkExecutor(batch_size, max_workers)
         self.item_exporter = item_exporter
 
         self.geth_trace_mapper = EthGethTraceMapper()
