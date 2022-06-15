@@ -37,10 +37,11 @@ class ExtractContractsJob(BaseJob):
             traces_iterable,
             batch_size,
             max_workers,
-            item_exporter):
+            item_exporter,
+            job_id=-1):
         self.traces_iterable = traces_iterable
-
-        self.batch_work_executor = BatchWorkExecutor(batch_size, max_workers)
+        self.job_id = job_id
+        self.batch_work_executor = BatchWorkExecutor(batch_size, max_workers, job_id=self.job_id)
         self.item_exporter = item_exporter
 
         self.contract_service = EthContractService()
