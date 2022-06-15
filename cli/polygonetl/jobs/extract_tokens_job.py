@@ -25,12 +25,13 @@ from polygonetl.jobs.export_tokens_job import ExportTokensJob
 
 
 class ExtractTokensJob(ExportTokensJob):
-    def __init__(self, web3, item_exporter, contracts_iterable, max_workers):
+    def __init__(self, web3, item_exporter, contracts_iterable, max_workers, job_id):
         super().__init__(web3, item_exporter, [], max_workers)
         self.contracts_iterable = contracts_iterable
+        self.job_id = job_id
 
     def _export(self):
-        self.batch_work_executor.execute(self.contracts_iterable, self._export_tokens_from_contracts)
+        self.batch_work_executor.execute(self.contracts_iterable, self._export_tokens_from_contracts(job_id=self.job_id))
 
     def _export_tokens_from_contracts(self, contracts):
         tokens = [contract for contract in contracts if contract.get('is_erc20') or contract.get('is_erc721')]
