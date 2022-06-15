@@ -42,12 +42,11 @@ class ExportBlocksJob(BaseJob):
             max_workers,
             item_exporter,
             export_blocks=True,
-            export_transactions=True,
-            job_id=-1):
+            export_transactions=True):
         validate_range(start_block, end_block)
         self.start_block = start_block
         self.end_block = end_block
-        self.job_id = job_id
+        # self.job_id = job_id
 
         self.batch_web3_provider = batch_web3_provider
 
