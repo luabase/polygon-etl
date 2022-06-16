@@ -25,10 +25,9 @@ from polygonetl.jobs.export_tokens_job import ExportTokensJob
 
 
 class ExtractTokensJob(ExportTokensJob):
-    def __init__(self, web3, item_exporter, contracts_iterable, max_workers, job_id):
+    def __init__(self, web3, item_exporter, contracts_iterable, max_workers, job_id=-1):
         super().__init__(web3, item_exporter, [], max_workers, job_id)
         self.contracts_iterable = contracts_iterable
-        # self.job_id = job_id
 
     def _export(self):
         self.batch_work_executor.execute(self.contracts_iterable, self._export_tokens_from_contracts)
